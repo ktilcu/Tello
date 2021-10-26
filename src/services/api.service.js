@@ -18,7 +18,7 @@ const getAuthHeaders = token =>
 export const getAuthUserData = ({ token }) => {
   const headers = getAuthHeaders(token);
 
-  return fetch('/users/me', { headers }).then(unwrap);
+  return fetch('/api/users/me', { headers }).then(unwrap);
 };
 
 export const postNewlyTrackedShows = ({ token, shows }) => {
@@ -30,7 +30,7 @@ export const postNewlyTrackedShows = ({ token, shows }) => {
     headers,
   };
 
-  return fetch('/shows/create', options).then(unwrap);
+  return fetch('/api/shows/create', options).then(unwrap);
 };
 
 export const getEpisodesForShow = ({ showId }) => {
@@ -46,7 +46,7 @@ export const patchEpisodes = ({ token, showId, episodeIds, markAs }) => {
     headers,
   };
 
-  return fetch(`/shows/${showId}/episodes`, options).then(unwrap);
+  return fetch(`/api/shows/${showId}/episodes`, options).then(unwrap);
 };
 
 export const deleteShow = ({ token, showId }) => {
@@ -54,5 +54,5 @@ export const deleteShow = ({ token, showId }) => {
 
   const options = { method: 'DELETE', headers };
 
-  return fetch(`/shows/${showId}`, options).then(unwrap);
+  return fetch(`/api/shows/${showId}`, options).then(unwrap);
 };

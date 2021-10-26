@@ -16,6 +16,7 @@
   },
   "proxy": "http://localhost:3005",
   "dependencies": {
+    "@imgix/js-core": "^3.2.1",
     "autoprefixer": "7.1.2",
     "aws-sdk": "^2.122.0",
     "babel-core": "6.25.0",
@@ -56,12 +57,12 @@
     "lodash": "^4.17.4",
     "moment": "^2.18.1",
     "mongodb": "^2.2.31",
-    "mongoose": "^4.11.7",
+    "mongoose": "^5.10.10",
     "nconf": "^0.8.4",
     "nodemon": "^1.11.0",
     "object-assign": "4.1.1",
     "passport": "^0.4.0",
-    "passport-google-oauth": "^1.0.0",
+    "passport-google-oauth": "^2.0.0",
     "passport-google-oauth2": "^0.1.6",
     "postcss-flexbugs-fixes": "3.2.0",
     "postcss-loader": "2.0.6",
@@ -132,5 +133,8 @@
       "jsx",
       "node"
     ]
+  },
+  "devDependencies": {
+    "postcss-merge-rules": "^2.1.2"
   }
 }

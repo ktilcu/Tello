@@ -9,7 +9,7 @@ import imageNormal from '../../images/google_button_normal@2x.png';
 // TODO: Better solution!
 const hrefPrefix =
   process.env.NODE_ENV !== 'production' ? 'http://localhost:3005' : '';
-const authHref = `${hrefPrefix}/auth/google`;
+const authHref = `${hrefPrefix}/api/auth/google`;
 
 const GoogleButton = () => (
   <a onClick={clearReduxData} href={authHref}>

@@ -1,0 +1,56 @@
+version: '3.1'
+services:
+  frontend:
+    build:
+      dockerfile: ./run/Dockerfile
+      context: .
+    networks:
+      - tello
+    restart: always
+  backend:
+    build:
+      dockerfile: ./run/Dockerfile-backend
+      context: .
+    networks:
+      - tello
+    restart: always
+    environment:
+      - AWS_SECRET_ACCESS_KEY
+      - AWS_ACCESS_KEY_ID
+      - AWS_REGION
+    # secrets:
+    #   - JWT_SECRET
+    #   - GOOGLE_CLIENT_ID
+    #   - GOOGLE_CLIENT_SECRET
+  revproxy:
+    build:
+      dockerfile: ./run/Dockerfile-nginx
+      context: .
+    networks:
+      - tello
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    restart: always
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    restart: always
+# secrets:
+#   JWT_SECRET:
+#     external: true
+#   GOOGLE_CLIENT_ID:
+#     external: true
+#   GOOGLE_CLIENT_SECRET:
+#     external: true
+#   AWS_SECRET_ACCESS_KEY:
+#     external: true
+networks:
+  tello:
