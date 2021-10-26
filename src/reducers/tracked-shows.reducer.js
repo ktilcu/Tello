@@ -7,12 +7,14 @@ import {
   ADD_SHOWS_RECEIVE,
   EPISODES_RECEIVE,
   TOGGLE_EPISODE,
+  MARK_EPISODES_AS_SEEN,
   MARK_EPISODE_AS_SEEN,
   MARK_EPISODE_AS_UNSEEN,
   MARK_SEASON_AS_SEEN,
   USER_DATA_RECEIVE,
   DELETE_SHOW_RECEIVE,
   LOGOUT,
+  UPLOAD_IMPORT_FILE,
 } from '../actions';
 import { sortEpisodesComparator } from '../helpers/show.helpers';
 import { convertArrayToMap, toggleInArray, mergeUnique } from '../utils';
@@ -112,6 +114,21 @@ export default function trackedShowsReducer(state = initialState, action) {
       });
     }
 
+    case MARK_EPISODES_AS_SEEN: {
+      const { showId, episodeIds } = action;
+      const show = state[showId];
+
+      const nextSeenEpisodeIds = [...show.seenEpisodeIds, ...episodeIds].filter(
+        (x, i, a) => a.indexOf(x) === i
+      );
+
+      return update(state, {
+        [showId]: {
+          seenEpisodeIds: { $set: nextSeenEpisodeIds },
+        },
+      });
+    }
+
     case MARK_EPISODE_AS_SEEN: {
       const { showId, episodeId } = action;
       const show = state[showId];
@@ -167,6 +184,11 @@ export default function trackedShowsReducer(state = initialState, action) {
 
     case LOGOUT: {
       return initialState;
+    }
+
+    case UPLOAD_IMPORT_FILE: {
+      const { fileContents } = action;
+      break;
     }
 
     default:

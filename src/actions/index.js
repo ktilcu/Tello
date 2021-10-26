@@ -10,6 +10,7 @@ export const FAILURE_SYNCING_NEW_SHOWS = 'FAILURE_SYNCING_NEW_SHOWS';
 export const SHOW_MODAL = 'SHOW_MODAL';
 export const HIDE_MODAL = 'HIDE_MODAL';
 export const TOGGLE_EPISODE = 'TOGGLE_EPISODE';
+export const MARK_EPISODES_AS_SEEN = 'MARK_EPISODES_AS_SEEN';
 export const MARK_EPISODE_AS_SEEN = 'MARK_EPISODE_AS_SEEN';
 export const MARK_EPISODE_AS_UNSEEN = 'MARK_EPISODE_AS_UNSEEN';
 export const MARK_SEASON_AS_SEEN = 'MARK_SEASON_AS_SEEN';
@@ -22,6 +23,7 @@ export const DELETE_SHOW_FAILURE = 'DELETE_SHOW_FAILURE';
 export const EPISODES_REQUEST = 'EPISODES_REQUEST';
 export const EPISODES_RECEIVE = 'EPISODES_RECEIVE';
 export const EPISODES_FAILURE = 'EPISODES_FAILURE';
+export const UPLOAD_IMPORT_FILE = 'UPLOAD_IMPORT_FILE';
 export const HIDE_FLASH_MESSAGE = 'HIDE_FLASH_MESSAGE';
 export const CHANGE_SORTING = 'CHANGE_SORTING';
 export const UPDATE_CALENDAR_WEEK = 'UPDATE_CALENDAR_WEEK';
@@ -72,6 +74,19 @@ export const toggleEpisode = ({
   showName,
   episodeId,
   episodeName,
+});
+
+export const markEpisodesAsSeen = ({
+  demo,
+  showId,
+  showName,
+  episodeIds,
+}) => ({
+  type: MARK_EPISODES_AS_SEEN,
+  demo,
+  showId,
+  showName,
+  episodeIds,
 });
 
 export const markEpisodeAsSeen = ({
@@ -166,6 +181,11 @@ export const episodesReceive = ({ showId, episodes }) => ({
 export const episodesFailure = ({ error }) => ({
   type: EPISODES_FAILURE,
   error,
+});
+
+export const uploadImport = ({ fileContents }) => ({
+  type: UPLOAD_IMPORT_FILE,
+  fileContents,
 });
 
 export const hideFlashMessage = () => ({

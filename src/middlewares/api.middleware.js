@@ -4,11 +4,13 @@ import {
   USER_DATA_REQUEST,
   EPISODES_REQUEST,
   ADD_SHOWS_REQUEST,
+  MARK_EPISODES_AS_SEEN,
   MARK_EPISODE_AS_SEEN,
   MARK_EPISODE_AS_UNSEEN,
   MARK_SEASON_AS_SEEN,
   TOGGLE_EPISODE,
   DELETE_SHOW_REQUEST,
+  UPLOAD_IMPORT_FILE,
   userDataReceive,
   userDataFailure,
   episodesReceive,
@@ -16,6 +18,7 @@ import {
   addShowsFailure,
   deleteShowReceive,
   deleteShowFailure,
+  uploadImport,
 } from '../actions';
 import { AUTH_TOKEN_KEY } from '../constants';
 import { formatEpisodeResults } from '../helpers/tv-maze.helpers';
@@ -87,6 +90,17 @@ export default function createAPIMiddleware() {
         break;
       }
 
+      case MARK_EPISODES_AS_SEEN: {
+        patchEpisodes({
+          token,
+          markAs: 'seen',
+          showId: action.showId,
+          episodeIds: [...action.episodeIds],
+        });
+
+        break;
+      }
+
       case MARK_EPISODE_AS_SEEN: {
         patchEpisodes({
           token,
@@ -147,6 +161,10 @@ export default function createAPIMiddleware() {
           .then(() => next(deleteShowReceive({ showId, showName })))
           .catch(error => next(deleteShowFailure({ showId, showName, error })));
 
+        break;
+      }
+
+      case UPLOAD_IMPORT_FILE: {
         break;
       }
 
