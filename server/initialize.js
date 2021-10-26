@@ -1,14 +1,14 @@
 const fs = require('fs');
+const path = require('path');
 
 const nconf = require('nconf');
 
-
-if ( typeof process.env.NODE_ENV === 'undefined' ) {
-  process.env.NODE_ENV = 'development'
+if (typeof process.env.NODE_ENV === 'undefined') {
+  process.env.NODE_ENV = 'development';
 }
 
-const DEFAULT_CONFIG  = './server/config/defaults.json';
-const PRIVATE_CONFIG  = './server/config/private.json';
+const DEFAULT_CONFIG = './server/config/defaults.json';
+const PRIVATE_CONFIG = './server/config/private.json';
 
 // The whole config thing is a little confusing when it comes to deployment.
 // Locally, we'll run `development.json`. We also have a `private.json`,
@@ -20,9 +20,10 @@ const PRIVATE_CONFIG  = './server/config/private.json';
 // That said, nconf doesn't seem to complain about missing files,
 // so the PRIVATE_CONFIG line just won't do anything in production.
 
-let ENV_CONFIG = process.env.NODE_ENV === 'production'
-  ? '/home/deploy/config/tello/production.json'
-  : `./server/config/${process.env.NODE_ENV}.json`;
+let ENV_CONFIG =
+  process.env.NODE_ENV === 'production'
+    ? path.join(__dirname, 'src/config/production.json')
+    : `./server/config/${process.env.NODE_ENV}.json`;
 
 // Setup nconf to use (in-order):
 //   1. Command-line arguments
