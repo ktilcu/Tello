@@ -65,7 +65,17 @@ const Footer = () => {
                 color={COLORS.purple.dark}
               >
                 Josh Comeau
-              </VibrantLink2>.
+              </VibrantLink2>{' '}
+              maintained by {' '}
+              <VibrantLink1
+                external
+                strong
+                href="https:/titter.com/kyletilman"
+                target="_blank"
+                color={COLORS.deepOrange.primary}
+              >
+                Kyle Tilman
+              </VibrantLink1>.
             </Credit>
             <Copyright>© 2017-present. All rights reserved.</Copyright>
             <Acknowledgements>
