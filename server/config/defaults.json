@@ -1,10 +1,10 @@
 {
   "PORT": 3005,
-  "AUTH_TOKEN_KEY": "token",
+  "AUTH_TOKEN_KEY": "tello-auth-token",
   "MONGO_URL": "url",
   "GOOGLE_CLIENT_ID": "thing",
   "GOOGLE_CLIENT_SECRET": "secret",
-  "GOOGLE_CALLBACK_URL": "http://tello.localtest.me:3005/api/auth/google/callback",
+  "GOOGLE_CALLBACK_URL": "https://tello.localtest.me/api/auth/google/callback",
   "WEB_URL": "http://tello.localtest.me",
   "JWT_SECRET": "secret"
 }

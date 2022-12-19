@@ -15,6 +15,7 @@ import {
   DELETE_SHOW_RECEIVE,
   LOGOUT,
   UPLOAD_IMPORT_FILE,
+  SHOW_DATA_SYNC,
 } from '../actions';
 import { sortEpisodesComparator } from '../helpers/show.helpers';
 import { convertArrayToMap, toggleInArray, mergeUnique } from '../utils';
@@ -46,7 +47,7 @@ export default function trackedShowsReducer(state = initialState, action) {
     case ADD_SHOWS_REQUEST: {
       // We want to immediately add these shows to the homepage, but make
       // it clear they're still loading.
-      const showsWithLoading = action.shows.map(show => ({
+      const showsWithLoading = action.shows.map((show) => ({
         ...show,
         image: null,
         isLoading: true,
@@ -80,6 +81,18 @@ export default function trackedShowsReducer(state = initialState, action) {
       return {
         ...state,
         ...newShowsMap,
+      };
+    }
+
+    case SHOW_DATA_SYNC: {
+      return {
+        ...state,
+        [action.show.id]: {
+          ...state[action.show.id],
+          name: action.show.name,
+          status: action.show.status,
+          summary: action.show.summary,
+        },
       };
     }
 
@@ -147,7 +160,7 @@ export default function trackedShowsReducer(state = initialState, action) {
       const show = state[showId];
 
       const nextSeenEpisodeIds = show.seenEpisodeIds.filter(
-        seenId => seenId !== episodeId
+        (seenId) => seenId !== episodeId
       );
 
       return update(state, {
@@ -199,7 +212,7 @@ export default function trackedShowsReducer(state = initialState, action) {
 // Helpers
 const convertEpisodeMapToArray = ({ episodes, seenEpisodeIds }) =>
   Object.keys(episodes)
-    .map(episodeId => ({
+    .map((episodeId) => ({
       ...episodes[episodeId],
       isSeen: seenEpisodeIds.includes(Number(episodeId)),
     }))
@@ -233,9 +246,10 @@ const organizeEpisodesBySeason = ({ episodes, seenEpisodeIds }) => {
 // I should really normalize episodes from shows, which would clean up a lot
 // of this stuff, at the expense of having to do a lot of server-client
 // data munging.
-export const getTrackedShows = state => state.trackedShows;
 
-export const getTrackedShowIds = createSelector(getTrackedShows, shows =>
+export const getTrackedShows = (state) => state.trackedShows;
+
+export const getTrackedShowIds = createSelector(getTrackedShows, (shows) =>
   Object.keys(shows).map(Number)
 );
 
@@ -250,7 +264,7 @@ export const getTrackedShowsArray = createSelector(
   getTrackedShowIds,
   (shows, showIds) =>
     showIds
-      .map(showId => {
+      .map((showId) => {
         const show = shows[showId];
 
         // If ths show has no episodes, no further array-making is required.
@@ -276,17 +290,17 @@ export const getTrackedShowsArray = createSelector(
           episodes,
         };
       })
-      .filter(show => !!show)
+      .filter((show) => !!show)
 );
 
 export const getAiredTrackedShowsArray = createSelector(
   getTrackedShowsArray,
-  shows =>
-    shows.map(show => ({
+  (shows) =>
+    shows.map((show) => ({
       ...show,
       episodes: show.episodes
         ? show.episodes.filter(
-            episode => episode.airstamp && !isFuture(episode.airstamp)
+            (episode) => episode.airstamp && !isFuture(episode.airstamp)
           )
         : undefined,
     }))
@@ -294,8 +308,8 @@ export const getAiredTrackedShowsArray = createSelector(
 
 export const getTrackedShowsWithUnseenEpisodesArray = createSelector(
   getAiredTrackedShowsArray,
-  shows =>
-    shows.filter(show => {
+  (shows) =>
+    shows.filter((show) => {
       // If we don't yet have the episode data, we need to include this show.
       if (!show.episodes) {
         return true;
@@ -312,8 +326,8 @@ export const getTrackedShowsWithUnseenEpisodesArray = createSelector(
 
 export const getTrackedShowsArrayWithSeasons = createSelector(
   getTrackedShowsArray,
-  shows =>
-    shows.map(show => ({
+  (shows) =>
+    shows.map((show) => ({
       ...show,
       seasons: organizeEpisodesBySeason(show),
     }))
@@ -321,8 +335,8 @@ export const getTrackedShowsArrayWithSeasons = createSelector(
 
 export const getAiredTrackedShowsArrayWithSeasons = createSelector(
   getAiredTrackedShowsArray,
-  shows =>
-    shows.map(show => ({
+  (shows) =>
+    shows.map((show) => ({
       ...show,
       seasons: organizeEpisodesBySeason(show),
     }))
@@ -330,5 +344,5 @@ export const getAiredTrackedShowsArrayWithSeasons = createSelector(
 
 export const getIsFetchingAnyEpisodes = createSelector(
   getTrackedShowsArray,
-  shows => shows.some(show => !Array.isArray(show.episodes))
+  (shows) => shows.some((show) => !Array.isArray(show.episodes))
 );

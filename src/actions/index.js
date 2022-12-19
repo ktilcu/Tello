@@ -5,6 +5,8 @@ import { MODAL_IDS } from '../constants';
 export const ADD_SHOWS_REQUEST = 'ADD_SHOWS_REQUEST';
 export const ADD_SHOWS_RECEIVE = 'ADD_SHOWS_RECEIVE';
 export const ADD_SHOWS_FAILURE = 'ADD_SHOWS_FAILURE';
+export const SHOW_DATA_RECEIVE = 'SHOW_DATA_RECEIVE';
+export const SHOW_DATA_SYNC = 'SHOW_DATA_SYNC';
 export const START_TRACKING_NEW_SHOWS = 'START_TRACKING_NEW_SHOWS';
 export const FAILURE_SYNCING_NEW_SHOWS = 'FAILURE_SYNCING_NEW_SHOWS';
 export const SHOW_MODAL = 'SHOW_MODAL';
@@ -76,12 +78,7 @@ export const toggleEpisode = ({
   episodeName,
 });
 
-export const markEpisodesAsSeen = ({
-  demo,
-  showId,
-  showName,
-  episodeIds,
-}) => ({
+export const markEpisodesAsSeen = ({ demo, showId, showName, episodeIds }) => ({
   type: MARK_EPISODES_AS_SEEN,
   demo,
   showId,
@@ -138,12 +135,12 @@ export const userDataRequest = () => ({
   type: USER_DATA_REQUEST,
 });
 
-export const userDataReceive = data => ({
+export const userDataReceive = (data) => ({
   type: USER_DATA_RECEIVE,
   data,
 });
 
-export const userDataFailure = error => ({
+export const userDataFailure = (error) => ({
   type: USER_DATA_FAILURE,
   error,
 });
@@ -215,7 +212,7 @@ export const decrementWeek = ({ startDate, endDate }) => ({
   endDate: addWeeks(endDate, -1),
 });
 
-export const swipeMobileView = index => {
+export const swipeMobileView = (index) => {
   return {
     type: SWIPE_MOBILE_VIEW,
     index,
@@ -234,4 +231,14 @@ export const logout = () => ({
 
 export const loadUnauthorizedRoute = () => ({
   type: LOAD_UNAUTHORIZED_ROUTE,
+});
+
+export const showDataReceive = (show) => ({
+  type: SHOW_DATA_RECEIVE,
+  show,
+});
+
+export const showDataSync = (show) => ({
+  type: SHOW_DATA_SYNC,
+  show,
 });

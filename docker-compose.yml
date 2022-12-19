@@ -6,18 +6,33 @@ services:
       context: .
     networks:
       - tello
+      # - nginx-proxy
     restart: always
+    expose:
+      - 80
+      - 443
+    environment:
+      - VIRTUAL_HOST=tello.tv
+      - VIRTUAL_PATH=/
+      - LETSENCRYPT_HOST=tello.tv
   backend:
     build:
       dockerfile: ./run/Dockerfile-backend
       context: .
+    expose:
+      - 80
+      - 443
     networks:
       - tello
+      # - nginx-proxy
     restart: always
     environment:
       - AWS_SECRET_ACCESS_KEY
       - AWS_ACCESS_KEY_ID
       - AWS_REGION
+      - VIRTUAL_HOST=tello.tv
+      - VIRTUAL_PATH=/api
+      - LETSENCRYPT_HOST=tello.tv
     # secrets:
     #   - JWT_SECRET
     #   - GOOGLE_CLIENT_ID
@@ -54,3 +69,5 @@ services:
 #     external: true
 networks:
   tello:
+  nginx-proxy:
+    external: true

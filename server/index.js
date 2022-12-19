@@ -74,11 +74,24 @@ api.get('/users/me', authenticatedRoute, (req, res, next) => {
 api.post('/shows/create', authenticatedRoute, (req, res, next) => {
   req.user.addShows(req.body.shows, (err, user) => {
     const shows = user.trackedShows
-      .filter(show => req.body.shows.find(({ id }) => id === show._id))
-      .map(show => show.getPublic());
+      .filter((show) => req.body.shows.find(({ id }) => id === show._id))
+      .map((show) => show.getPublic());
 
     return res.json({ shows });
   });
+});
+
+api.put('/shows/:showId', authenticatedRoute, (req, res) => {
+  req.user.updateShow(
+    { showId: req.params.showId, fields: req.body },
+    (err, user) => {
+      if (err) console.error(err);
+      const newShow = user.trackedShows
+        .filter((tShow) => tShow._id == req.params.showId)
+        .map((show) => show.getPublic())[0];
+      res.json(newShow);
+    }
+  );
 });
 
 api.patch('/shows/:showId/episodes', authenticatedRoute, (req, res, next) => {

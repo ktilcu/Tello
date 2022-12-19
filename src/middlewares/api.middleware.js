@@ -19,9 +19,15 @@ import {
   deleteShowReceive,
   deleteShowFailure,
   uploadImport,
+  showDataReceive,
+  SHOW_DATA_RECEIVE,
+  showDataSync,
 } from '../actions';
 import { AUTH_TOKEN_KEY } from '../constants';
-import { formatEpisodeResults } from '../helpers/tv-maze.helpers';
+import {
+  formatEpisodeResults,
+  formatShowWithEmbeds,
+} from '../helpers/tv-maze.helpers';
 import { deleteCookie } from '../utils';
 import {
   getAuthUserData,
@@ -29,10 +35,12 @@ import {
   getEpisodesForShow,
   patchEpisodes,
   deleteShow,
+  getShowWithEmbeddedEpisodesAndNextEpisode,
+  updateShow,
 } from '../services/api.service';
 
 export default function createAPIMiddleware() {
-  return store => next => action => {
+  return (store) => (next) => (action) => {
     // Fetch the user's token from the cookie. If no cookie is found, they
     // must be logged out, and shouldn't be interacting with our API.
     const token = Cookies.get(AUTH_TOKEN_KEY);
@@ -47,11 +55,11 @@ export default function createAPIMiddleware() {
     switch (action.type) {
       case USER_DATA_REQUEST: {
         getAuthUserData({ token })
-          .then(json => {
+          .then((json) => {
             console.info('Got JSON', json);
             next(userDataReceive(json));
           })
-          .catch(err => {
+          .catch((err) => {
             console.error('CAUGHT ERROR IN USER DATA', err);
             // If there was an error, let's delete the locally-stored
             // cookie. This forces the user to attempt to login again,
@@ -70,8 +78,8 @@ export default function createAPIMiddleware() {
         // call is just to sync the server with what the user's selected on
         // the client). Only worry if the server bows up.
         postNewlyTrackedShows({ token, shows: action.shows })
-          .then(response => next(addShowsReceive(response)))
-          .catch(response => {
+          .then((response) => next(addShowsReceive(response)))
+          .catch((response) => {
             console.error('Could not persist new tracked shows', response);
 
             next(addShowsFailure(response));
@@ -80,10 +88,18 @@ export default function createAPIMiddleware() {
         break;
       }
 
+      case SHOW_DATA_RECEIVE: {
+        updateShow(token, action.show).then((show) => next(showDataSync(show)));
+
+        break;
+      }
+
       case EPISODES_REQUEST: {
-        getEpisodesForShow({ showId: action.showId })
-          .then(formatEpisodeResults)
-          .then(episodes => {
+        getShowWithEmbeddedEpisodesAndNextEpisode({ showId: action.showId })
+          .then(formatShowWithEmbeds)
+          .then(({ episodes, nextepisode, show }) => {
+            store.dispatch(showDataReceive(show));
+
             next(episodesReceive({ showId: action.showId, episodes }));
           });
 
@@ -159,7 +175,9 @@ export default function createAPIMiddleware() {
 
         deleteShow({ token, showId })
           .then(() => next(deleteShowReceive({ showId, showName })))
-          .catch(error => next(deleteShowFailure({ showId, showName, error })));
+          .catch((error) =>
+            next(deleteShowFailure({ showId, showName, error }))
+          );
 
         break;
       }
