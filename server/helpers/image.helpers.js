@@ -17,7 +17,7 @@ module.exports.uploadImage = ({ key, url }) =>
 
     request({ url, encoding: null }, (err, res, body) => {
       if (err) {
-        reject(err);
+        return reject(err);
       }
 
       s3.putObject(
